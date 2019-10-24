@@ -1,10 +1,8 @@
 """versatileimagefield Field mixins."""
-from __future__ import unicode_literals
-
 import os
 import re
 
-from django.utils.six import iteritems
+from six import iteritems
 
 from .datastructures import FilterLibrary
 from .registry import autodiscover, versatileimagefield_registry

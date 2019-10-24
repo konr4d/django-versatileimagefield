@@ -1,10 +1,6 @@
 """Default sizer & filter definitions."""
-from __future__ import division
-from __future__ import unicode_literals
-
-from django.utils.six import BytesIO
-
 from PIL import Image, ImageOps
+from six import BytesIO
 
 from .datastructures import FilteredImage, SizedImage
 from .registry import versatileimagefield_registry

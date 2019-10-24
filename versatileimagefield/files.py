@@ -1,12 +1,10 @@
-from __future__ import unicode_literals
-
 from django.core.files.base import File
 from django.db.models.fields.files import (
     FieldFile,
     ImageFieldFile,
     ImageFileDescriptor
 )
-from django.utils import six
+from six import string_types
 
 from .mixins import VersatileImageMixIn
 
@@ -64,7 +62,7 @@ class VersatileImageFileDescriptor(ImageFileDescriptor):
         # it's also conceivable that user subclasses might also want to
         # subclass the attribute class]. This object understands how to convert
         # a path to a file, and also how to handle None.
-        if isinstance(file, six.string_types) or file is None:
+        if isinstance(file, string_types) or file is None:
             attr = self.field.attr_class(
                 instance=instance,
                 field=self.field,
