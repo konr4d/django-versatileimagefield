@@ -41,7 +41,8 @@ class FilteredImage(DeleteAndClearCacheMixIn, ProcessedImage):
         self.name = get_filtered_path(
             path_to_image=self.path_to_image,
             filename_key=filename_key,
-            storage=storage
+            storage=storage,
+            extension=getattr(self, 'ext', None)
         )
 
         self.url = storage.url(self.name)
@@ -127,14 +128,6 @@ class FilterLibrary(dict):
                     filtered_path = None
                     prepped_filter = DummyFilter()
                 else:
-                    filtered_path = get_filtered_path(
-                        path_to_image=self.original_file_location,
-                        filename_key=key,
-                        storage=self.storage
-                    )
-
-                    filtered_url = self.storage.url(filtered_path)
-
                     filter_cls = self.registry._filter_registry[key]
                     prepped_filter = filter_cls(
                         path_to_image=self.original_file_location,
@@ -142,6 +135,15 @@ class FilterLibrary(dict):
                         create_on_demand=self.create_on_demand,
                         filename_key=key
                     )
+
+                    filtered_path = get_filtered_path(
+                        path_to_image=self.original_file_location,
+                        filename_key=key,
+                        storage=self.storage,
+                        extension=filter_cls.ext
+                    )
+                    filtered_url = self.storage.url(filtered_path)
+
                     if self.create_on_demand is True:
                         if cache.get(filtered_url):
                             # The filtered_url exists in the cache so the image

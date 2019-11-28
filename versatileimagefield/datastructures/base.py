@@ -148,6 +148,13 @@ class ProcessedImage(object):
             mime_type
         )
 
+    def preprocess_WEBP(self, image, **kwargs):
+        return image, {
+            'icc_profile': '',
+            'lossless': False,
+            'quality': 95
+        }
+
     def save_image(self, imagefile, save_path, file_ext, mime_type):
         """
         Save an image to self.storage at `save_path`.

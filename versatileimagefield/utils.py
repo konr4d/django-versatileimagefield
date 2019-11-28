@@ -33,6 +33,7 @@ MIME_TYPE_TO_PIL_IDENTIFIER = {
     'image/tiff': 'TIFF',
     'image/x-xbitmap': 'XBM',
     'image/x-xpm': 'XPM',
+    'image/webp': 'WEBP',
 }
 
 
@@ -52,7 +53,7 @@ def post_process_image_key(image_key):
         return VERSATILEIMAGEFIELD_POST_PROCESSOR(image_key)
 
 
-def get_resized_filename(filename, width, height, filename_key):
+def get_resized_filename(filename, width, height, filename_key, extension=None):
     """
     Return the 'resized filename' (according to `width`, `height` and
     `filename_key`) in the following format:
@@ -64,8 +65,11 @@ def get_resized_filename(filename, width, height, filename_key):
         image_name = filename
         ext = 'jpg'
 
+    if extension:
+        ext = extension
+
     resized_template = "%(filename_key)s-%(width)dx%(height)d"
-    if ext.lower() in ['jpg', 'jpeg']:
+    if ext.lower() in ['jpg', 'jpeg', 'webp']:
         resized_template = resized_template + "-%(quality)d"
 
     resized_key = resized_template % ({
@@ -83,7 +87,7 @@ def get_resized_filename(filename, width, height, filename_key):
 
 
 def get_resized_path(path_to_image, width, height,
-                     filename_key, storage):
+                     filename_key, storage, extension=None):
     """
     Return a `path_to_image` location on `storage` as dictated by `width`, `height`
     and `filename_key`
@@ -94,7 +98,8 @@ def get_resized_path(path_to_image, width, height,
         filename,
         width,
         height,
-        filename_key
+        filename_key,
+        extension=extension
     )
 
     joined_path = os.path.join(*[
@@ -106,7 +111,7 @@ def get_resized_path(path_to_image, width, height,
     return joined_path
 
 
-def get_filtered_filename(filename, filename_key):
+def get_filtered_filename(filename, filename_key, extension=None):
     """
     Return the 'filtered filename' (according to `filename_key`)
     in the following format:
@@ -117,6 +122,8 @@ def get_filtered_filename(filename, filename_key):
     except ValueError:
         image_name = filename
         ext = 'jpg'
+    if extension:
+        ext = extension
     return "%(image_name)s__%(filename_key)s__.%(ext)s" % ({
         'image_name': image_name,
         'filename_key': filename_key,
@@ -124,13 +131,13 @@ def get_filtered_filename(filename, filename_key):
     })
 
 
-def get_filtered_path(path_to_image, filename_key, storage):
+def get_filtered_path(path_to_image, filename_key, storage, extension=None):
     """
     Return the 'filtered path'
     """
     containing_folder, filename = os.path.split(path_to_image)
 
-    filtered_filename = get_filtered_filename(filename, filename_key)
+    filtered_filename = get_filtered_filename(filename, filename_key, extension=extension)
     path_to_return = os.path.join(*[
         containing_folder,
         VERSATILEIMAGEFIELD_FILTERED_DIRNAME,

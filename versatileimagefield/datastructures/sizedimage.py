@@ -124,7 +124,8 @@ class SizedImage(ProcessedImage, dict):
                 width=width,
                 height=height,
                 filename_key=self.get_filename_key(),
-                storage=self.storage
+                storage=self.storage,
+                extension=getattr(self, 'ext', None)
             )
 
             try:
